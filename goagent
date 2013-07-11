@@ -63,8 +63,12 @@ status() {
 	fi
 }
 
-if [ -z "$1" ]; then
+usage() {
 	echo "Usage: $0 {start|stop|restart|status}"
+}
+
+if [ -z "$1" ]; then
+	usage
 	exit 1
 fi
 
@@ -89,7 +93,7 @@ case "$1" in
 		status
 		;;
 	*)
-		echo "Usage: $0 {start|stop|restart|status}"
+		usage
 		exit 1;
 		;;
 esac
