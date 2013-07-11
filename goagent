@@ -36,8 +36,8 @@ else
 	exit 1
 fi
 
-if [ -z "$GOAGENT_LOG" ]; then
-	GOAGENT_LOG=/dev/null
+if [ -z "$GOAGENT_OUT" ]; then
+	GOAGENT_OUT=/dev/null
 fi
 
 PID_PATH=$GOAGENT_HOME/local/goagent.pid
@@ -48,7 +48,7 @@ start() {
 		exit 1
 	fi
 	# start the goagent
-	$PY_PROG $GOAGENT_HOME/local/proxy.py > /dev/null 2>&1 &
+	$PY_PROG $GOAGENT_HOME/local/proxy.py > $GOAGENT_OUT 2>&1 &
 	touch $PID_PATH
 	echo $! > $PID_PATH
 }
