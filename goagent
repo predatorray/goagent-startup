@@ -11,8 +11,8 @@
 #
 #   GOAGENT_HOME   May point at your GoAgent directory
 #
-#   GOAGENT_OUT    (optional) file to the log file
-#                  default is /dev/null
+#   GOAGENT_OUT    (optional) Full path to a file where stdout and stderr will be redirected.
+#                  Default is /dev/null
 #
 # pidfile: $GOAGENT_HOME/local/goagent.pid
 # logfile: $GOAGENT_OUT
