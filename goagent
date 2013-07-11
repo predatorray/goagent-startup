@@ -1,0 +1,97 @@
+#!/bin/sh
+#
+# Startup script for GoAgent client
+#
+# Description: This program is used to run the GoAgent Client in the backgroud.
+#
+# Environment Variable Prerequisites
+#
+#   You can set the environment variables below in your .profile.
+#   And you can also keep them in the script setenv.sh at the same location of this script.
+#
+#   GOAGENT_HOME   May point at your GoAgent directory
+#
+#   GOAGENT_OUT    (optional) file to the log file
+#                  default is /dev/null
+#
+# pidfile: $GOAGENT_HOME/local/goagent.pid
+# logfile: $GOAGENT_OUT
+#
+# Author: Ray<predator.ray@gmail.com>
+#
+
+. "./setenv.sh"
+
+if [ -z "$GOAGENT_HOME" ]; then
+	echo 'The environment variable $GOAGENT_HOME is not set!'
+	exit 1
+fi
+
+if [ -z "$GOAGENT_LOG" ]; then
+	GOAGENT_LOG=/dev/null
+fi
+
+PID_PATH=$GOAGENT_HOME/local/goagent.pid
+
+start() {
+	if [ -e "$PID_PATH" ]; then
+		echo "GoAgent is already running (PID: `cat $PID_PATH`)."
+		exit 1
+	fi
+	# start the goagent
+	python3 $GOAGENT_HOME/local/proxy.py > /dev/null 2>&1 &
+	touch $PID_PATH
+	echo $! > $PID_PATH
+}
+
+stop() {
+	# stop the goagent
+	if [ ! -e "$PID_PATH" ]; then
+		echo 'GoAgent is not running.'
+	else
+		kill `cat $PID_PATH`
+		rm $PID_PATH
+	fi
+}
+
+status() {
+	# show the status of the goagent
+	if [ -e "$PID_PATH" ]; then
+		echo "GoAgent (PID: `cat $PID_PATH`) is running."
+	else
+		echo 'GoAgent is not running.'
+	fi
+}
+
+if [ -z "$1" ]; then
+	echo "Usage: $0 {start|stop|restart|status}"
+	exit 1
+fi
+
+case "$1" in
+	start)
+		echo 'Starting GoAgent...'
+		start
+		echo 'GoAgent started.'
+		;;
+	stop)
+		echo 'Stopping GoAgent...'
+		stop
+		echo 'GoAgent stopped.'
+		;;
+	restart)
+		echo 'Restarting GoAgent...'
+		stop
+		start
+		echo 'GoAgent restarted.'
+		;;
+	status)
+		status
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|status}"
+		exit 1;
+		;;
+esac
+
+exit 0
