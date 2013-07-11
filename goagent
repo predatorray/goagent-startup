@@ -27,6 +27,15 @@ if [ -z "$GOAGENT_HOME" ]; then
 	exit 1
 fi
 
+if [ ! -z `which python3` ]; then
+	PY_PROG=python3
+elif [ ! -z `which python` ]; then
+	PY_PROG=python
+else
+	echo 'Cannot find python in your $PATH!'
+	exit 1
+fi
+
 if [ -z "$GOAGENT_LOG" ]; then
 	GOAGENT_LOG=/dev/null
 fi
@@ -39,7 +48,7 @@ start() {
 		exit 1
 	fi
 	# start the goagent
-	python3 $GOAGENT_HOME/local/proxy.py > /dev/null 2>&1 &
+	$PY_PROG $GOAGENT_HOME/local/proxy.py > /dev/null 2>&1 &
 	touch $PID_PATH
 	echo $! > $PID_PATH
 }
@@ -63,12 +72,8 @@ status() {
 	fi
 }
 
-usage() {
-	echo "Usage: $0 {start|stop|restart|status}"
-}
-
 if [ -z "$1" ]; then
-	usage
+	echo "Usage: $0 {start|stop|restart|status}"
 	exit 1
 fi
 
@@ -93,7 +98,7 @@ case "$1" in
 		status
 		;;
 	*)
-		usage
+		echo "Usage: $0 {start|stop|restart|status}"
 		exit 1;
 		;;
 esac
