@@ -20,7 +20,11 @@
 # Author: Ray<predator.ray@gmail.com>
 #
 
-. "./setenv.sh"
+SETENV_PATH="./setenv.sh"
+
+if [ -e "$SETENV_PATH" ]; then
+	. "$SETENV_PATH"
+fi
 
 if [ -z "$GOAGENT_HOME" ]; then
 	echo 'The environment variable $GOAGENT_HOME is not set!'
@@ -72,8 +76,13 @@ status() {
 	fi
 }
 
-if [ -z "$1" ]; then
+usage() {
+	# show the usage of the program
 	echo "Usage: $0 {start|stop|restart|status}"
+}
+
+if [ -z "$1" ]; then
+	usage
 	exit 1
 fi
 
@@ -98,7 +107,7 @@ case "$1" in
 		status
 		;;
 	*)
-		echo "Usage: $0 {start|stop|restart|status}"
+		usage
 		exit 1;
 		;;
 esac
